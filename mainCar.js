@@ -5,7 +5,8 @@ class MainCar extends BaseCar {
         this.maxSpeed = 5;
         this.friction = 0.15;
 
-        this.sensor = new Sensor(this);
+        // Update sensor to 19 rays
+        this.sensor = new Sensor(this, 19);
         this.controls = new Controls();
     }
 
@@ -36,9 +37,7 @@ class MainCar extends BaseCar {
 
     #detectDamage(roadBorders, traffic) {
         const borderCollision = roadBorders.some(border => polyIntersect(this.polygon, border));
-
         const trafficCollision = traffic.some(traffic => polyIntersect(this.polygon, traffic.polygon));
-
         return borderCollision || trafficCollision;
     }
 
