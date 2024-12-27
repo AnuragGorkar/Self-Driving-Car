@@ -17,7 +17,7 @@ function getIntersection(A, B, C, D){
             }
         }
     }
-    return null;
+    return null;    
 }
 
 function polyIntersect(poly1, poly2){ 

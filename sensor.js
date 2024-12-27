@@ -8,15 +8,15 @@ class Sensor {
         this.readings = [];
     }
 
-    update(roadBorders){
+    update(roadBorders, traffic){
         this.#castRays();
-        this.#getSensorIntersections(roadBorders);
+        this.#getSensorIntersections(roadBorders, traffic);
     }
 
-    #getSensorIntersections(roadBorders){ 
+    #getSensorIntersections(roadBorders, traffic){ 
         this.readings = [];
         for(let i=0; i<this.rayCount; i++){ 
-            this.readings.push(this.#getReadings(this.rays[i], roadBorders));
+            this.readings.push(this.#getReadings(this.rays[i], roadBorders, traffic));
         }
     }
 
@@ -33,12 +33,26 @@ class Sensor {
         }
     }
 
-    #getReadings(ray, roadBorders){ 
+    #getReadings(ray, roadBorders, traffic){ 
         this.touches = []
         for(let i=0; i<roadBorders.length; i++){ 
             const touch = getIntersection(ray[0], ray[1], roadBorders[i][0], roadBorders[i][1]);
             if(touch) this.touches.push(touch);
         }
+        for(let i=0; i<traffic.length; i++){
+            const trafficPolygon = traffic[i].polygon;
+
+            for (let j = 0; j < trafficPolygon.length; j++) {
+                const touch = getIntersection(
+                    ray[0], ray[1], 
+                    trafficPolygon[j], trafficPolygon[(j + 1) % trafficPolygon.length]
+                );
+                if (touch) {
+                    this.touches.push(touch);
+                }
+            }
+        }
+
         if(this.touches.length == 0) return null; 
         else{ 
             let minOffSet = Number.MAX_SAFE_INTEGER;
